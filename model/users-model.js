@@ -1,8 +1,9 @@
-const db = require('../database/db-config');
+const db = require('../database/db-config.js');
 
 module.exports = {
   find,
   findById,
+  findByUser,
   add,
   update,
   remove
@@ -14,7 +15,15 @@ function find() {
 
 function findById(id) {}
 
-function add(user) {}
+function findByUser(username) {
+  return db('users')
+    .where('username', '=', username)
+    .first();
+}
+
+function add(newUser) {
+  return db('users').insert(newUser);
+}
 
 function update(changes, id) {}
 
