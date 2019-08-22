@@ -12,7 +12,7 @@ module.exports = function restricted(req, res, next) {
       .first()
       .then(user => {
         if (user && bcrypt.compareSync(password, user.password)) {
-          res.status(200).json({ message: 'Logged in!' });
+          next();
         } else {
           res.status(401).json({ message: 'You shall not pass!' });
         }
