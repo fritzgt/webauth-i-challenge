@@ -4,6 +4,9 @@ const session = require('express-session');
 
 const server = express();
 
+//Importing connect-session-knex for peristent user session
+const knexSessionStore = require('connect-session-knex')(session);
+
 // configure express-session middleware
 const sessionConfig = {
   name: 'notsession', //for security dont specify we’re using this library

@@ -12,6 +12,9 @@ const users = require('../model/users-model.js');
 //Importing custom middleware
 const restricted = require('../auth/restricted-middleware.js');
 
+//Importing connect-session-knex for peristent user session
+const knexSessionStore = require('connect-session-knex')(session);
+
 //post new users
 router.post('/register', async (req, res) => {
   const newUser = req.body;
@@ -48,6 +51,22 @@ router.post('/login', async (req, res) => {
     }
   } catch {
     res.status(500).json({ message: 'Cannot connect to server' });
+  }
+});
+
+//Logout
+
+router.delete('/logout', (req, res) => {
+  if (req.session) {
+    req.session.destroy(err => {
+      if (err) {
+        res.json({ message: 'You cannot log out!' });
+      } else {
+        res.status(200).json({ message: 'Thank you for visiting!' });
+      }
+    });
+  } else {
+    res.status(200).json({ message: 'You were nefver here to begin with' });
   }
 });
 
