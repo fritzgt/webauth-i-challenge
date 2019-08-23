@@ -17,7 +17,16 @@ const sessionConfig = {
   }, // 1 day in milliseconds
   httpOnly: true, // don't let JS code access cookies. Browser extensions run JS code on your browser!
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+
+  //Creating table for persistence sessions
+  store: new knexSessionStore({
+    knex: require('./database/db-config.js'),
+    tableName: 'sessions',
+    sidfilename: 'sid',
+    createtable: true,
+    clearinterval: 100 * 60 * 60
+  })
 };
 
 //Initializing session middleware

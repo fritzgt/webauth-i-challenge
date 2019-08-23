@@ -12,8 +12,6 @@ const users = require('../model/users-model.js');
 //Importing custom middleware
 const restricted = require('../auth/restricted-middleware.js');
 
-//Importing connect-session-knex for peristent user session
-const knexSessionStore = require('connect-session-knex')(session);
 
 //post new users
 router.post('/register', async (req, res) => {
