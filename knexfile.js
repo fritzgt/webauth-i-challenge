@@ -5,6 +5,8 @@ module.exports = {
       //update to location and db name
       filename: './database/auth.sqlite3'
     },
+    //add useNullAsDefault
+    useNullAsDefault: true,
     pool: {
       afterCreate: (conn, done) => {
         conn.run('PRAGMA foreign_keys = ON', done);

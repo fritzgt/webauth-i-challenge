@@ -9,6 +9,9 @@ const bcrypt = require('bcryptjs');
 //importing db
 const users = require('../model/users-model.js');
 
+//Importing custom middleware
+const restricted = require('../auth/restricted-middleware.js');
+
 //post new users
 router.post('/register', async (req, res) => {
   const newUser = req.body;
@@ -37,6 +40,8 @@ router.post('/login', async (req, res) => {
     //if statement checks if the username exist and
     //if the password matches the one in the db using bcrypt
     if (user && bcrypt.compareSync(password, user.password)) {
+      //Passing the user object to the session
+      req.session.user = user;
       res.status(200).json({ message: 'Logged in!' });
     } else {
       res.status(401).json({ message: 'You shall not pass!' });
@@ -47,7 +52,9 @@ router.post('/login', async (req, res) => {
 });
 
 //get users
-router.get('/users', async (req, res) => {
+//Passing a custome middleware to check
+// if user is currently logged in
+router.get('/users', restricted, async (req, res) => {
   try {
     const data = await users.find();
     res.status(200).json({ data });
