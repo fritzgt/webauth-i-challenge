@@ -12,7 +12,6 @@ const users = require('../model/users-model.js');
 //Importing custom middleware
 const restricted = require('../auth/restricted-middleware.js');
 
-
 //post new users
 router.post('/register', async (req, res) => {
   const newUser = req.body;
@@ -25,9 +24,22 @@ router.post('/register', async (req, res) => {
 
   try {
     const data = await users.add(newUser);
-    res.status(200).json({ data });
-  } catch {
-    res.status(500).json({ message: 'Cannot connect to server' });
+
+    if (!newUser.username) {
+      res.status(401).json({
+        message: 'Please provide a username and password!'
+      });
+    } else {
+      res.status(200).json({
+        message: `Hello ${newUser.username}, your are  now registered!`
+      });
+    }
+  } catch (err) {
+    if (err.errno == 19) {
+      res.status(400).json({ message: 'username is not available!' });
+    } else {
+      res.status(500).json({ err });
+    }
   }
 });
 
@@ -41,8 +53,11 @@ router.post('/login', async (req, res) => {
     //if statement checks if the username exist and
     //if the password matches the one in the db using bcrypt
     if (user && bcrypt.compareSync(password, user.password)) {
-      //Passing the user object to the session
-      req.session.user = user;
+      //Passing the user object to the session or
+      //to prevent passing sensetive data we can pass a boolean
+      //since the middleware is only checking for truthiness not
+      //comparing agains the db in this case
+      req.session.user = true;
       res.status(200).json({ message: 'Logged in!' });
     } else {
       res.status(401).json({ message: 'You shall not pass!' });
